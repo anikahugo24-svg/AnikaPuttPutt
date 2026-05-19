@@ -209,6 +209,9 @@ export default function App() {
   const [lightbox, setLightbox]   = useState(null)
   const [toast, setToast]         = useState('')
   const [uploading, setUploading] = useState(false)
+  const [bonusUnlocked, setBonusUnlocked] = useState(false)
+  const [bonusPasswordInput, setBonusPasswordInput] = useState('')
+  const [bonusPasswordError, setBonusPasswordError] = useState(false)
   const fileRef = useRef()
 
   function showToast(msg) { setToast(msg); setTimeout(() => setToast(''), 2000) }
@@ -442,7 +445,46 @@ export default function App() {
         {tab === 'course1' && <ScoringPanel courseIdx={0} />}
         {tab === 'course2' && <ScoringPanel courseIdx={1} />}
 
-        {tab === 'bonuses' && (
+        {tab === 'bonuses' && !bonusUnlocked && (
+          <div>
+            <div className="card" style={{ textAlign:'center', padding:'32px 20px' }}>
+              <div style={{ fontSize:'2.5rem', marginBottom:12 }}>🔒</div>
+              <div style={{ fontFamily:"'Playfair Display',serif", color:'var(--pink-deep)', fontSize:'1.2rem', fontWeight:700, marginBottom:6 }}>
+                Bonuses are locked
+              </div>
+              <div style={{ color:'var(--muted)', fontSize:'.82rem', marginBottom:20 }}>
+                Only the birthday girl can award bonus points 🎀
+              </div>
+              <input
+                className="inp"
+                type="password"
+                placeholder="Enter password…"
+                value={bonusPasswordInput}
+                onChange={e => { setBonusPasswordInput(e.target.value); setBonusPasswordError(false) }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    if (bonusPasswordInput === '!Password@2405') { setBonusUnlocked(true); setBonusPasswordInput('') }
+                    else setBonusPasswordError(true)
+                  }
+                }}
+                style={{ marginBottom:10, textAlign:'center' }}
+              />
+              {bonusPasswordError && (
+                <div style={{ color:'#c0392b', fontSize:'.78rem', fontWeight:700, marginBottom:10 }}>
+                  ❌ Wrong password — only Anika can do this!
+                </div>
+              )}
+              <button className="btn btn-pink" style={{ width:'100%' }} onClick={() => {
+                if (bonusPasswordInput === '!Password@2405') { setBonusUnlocked(true); setBonusPasswordInput('') }
+                else setBonusPasswordError(true)
+              }}>
+                Unlock Bonuses
+              </button>
+            </div>
+          </div>
+        )}
+
+        {tab === 'bonuses' && bonusUnlocked && (
           <div>
             <div className="card">
               <div className="card-title">🌟 Award Bonus Points</div>
@@ -498,6 +540,10 @@ export default function App() {
                 })}
               </div>
             )}
+            <button onClick={() => setBonusUnlocked(false)}
+              style={{ display:'block', margin:'0 auto', background:'none', border:'none', color:'var(--muted)', fontSize:'.75rem', cursor:'pointer', padding:'8px' }}>
+              🔒 Lock bonuses
+            </button>
           </div>
         )}
 
