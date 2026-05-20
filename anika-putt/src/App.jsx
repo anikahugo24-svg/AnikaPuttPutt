@@ -708,7 +708,7 @@ export default function App() {
                       <option value="">No group</option>
                       {Array.from({length:8},(_,i)=><option key={i+1} value={i+1}>{GROUP_NAMES[i]}</option>)}
                     </select>
-                    <button className="btn btn-danger" onClick={()=>removePlayer(p.id)}>✕</button>
+                    <button className="btn btn-danger" onClick={()=>{ if(confirm(`Remove ${p.name}? This will delete all their scores.`)) removePlayer(p.id) }}>✕</button>
                   </div>
                 )
               })}
